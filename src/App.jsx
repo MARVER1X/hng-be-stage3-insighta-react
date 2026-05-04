@@ -5,9 +5,9 @@ import MainLayout from './components/MainLayout';
 import LoginPage from './pages/LoginPage';
 import ProfilesPage from './pages/ProfilesPage';
 import DashboardPage from './pages/DashboardPage';
+import SearchPage from './pages/SearchPage';
 
 // Placeholder components (to be built next)
-const SearchPage = () => <div>Search Page</div>;
 const AccountPage = () => <div>Account Page</div>;
 
 function App() {
