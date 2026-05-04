@@ -6,9 +6,7 @@ import LoginPage from './pages/LoginPage';
 import ProfilesPage from './pages/ProfilesPage';
 import DashboardPage from './pages/DashboardPage';
 import SearchPage from './pages/SearchPage';
-
-// Placeholder components (to be built next)
-const AccountPage = () => <div>Account Page</div>;
+import AccountPage from './pages/AccountPage';
 
 function App() {
   return (
