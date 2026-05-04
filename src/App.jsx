@@ -4,15 +4,9 @@ import { AuthProvider } from './context/AuthContext';
 import MainLayout from './components/MainLayout';
 import LoginPage from './pages/LoginPage';
 import ProfilesPage from './pages/ProfilesPage';
+import DashboardPage from './pages/DashboardPage';
 
 // Placeholder components (to be built next)
-const Dashboard = () => (
-  <div className="page-header">
-    <h1>Dashboard</h1>
-    <p>Welcome to Insighta Labs Intelligence System.</p>
-  </div>
-);
-
 const SearchPage = () => <div>Search Page</div>;
 const AccountPage = () => <div>Account Page</div>;
 
@@ -32,7 +26,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profiles" element={<ProfilesPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/account" element={<AccountPage />} />
