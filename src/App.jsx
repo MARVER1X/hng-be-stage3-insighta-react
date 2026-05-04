@@ -1,11 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import MainLayout from './components/MainLayout';
 import LoginPage from './pages/LoginPage';
 
-// Placeholder for Dashboard (we will build this next)
-const Dashboard = () => <div>Dashboard</div>;
+// Placeholder components (to be built next)
+const Dashboard = () => (
+  <div className="page-header">
+    <h1>Dashboard</h1>
+    <p>Welcome to Insighta Labs Intelligence System.</p>
+  </div>
+);
+
+const Profiles = () => <div>Profiles Page</div>;
+const SearchPage = () => <div>Search Page</div>;
+const AccountPage = () => <div>Account Page</div>;
 
 function App() {
   return (
@@ -15,20 +24,22 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<LoginPage />} />
           
-          {/* Protected Routes */}
+          {/* Protected Area with MainLayout */}
           <Route 
-            path="/dashboard" 
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <MainLayout />
               </ProtectedRoute>
-            } 
-          />
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profiles" element={<Profiles />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/account" element={<AccountPage />} />
+          </Route>
           
-          {/* Default Redirect */}
+          {/* Default Redirects */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          
-          {/* 404 Redirect to Login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
