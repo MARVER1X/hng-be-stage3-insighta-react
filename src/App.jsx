@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import MainLayout from './components/MainLayout';
 import LoginPage from './pages/LoginPage';
+import ProfilesPage from './pages/ProfilesPage';
 
 // Placeholder components (to be built next)
 const Dashboard = () => (
@@ -12,7 +13,6 @@ const Dashboard = () => (
   </div>
 );
 
-const Profiles = () => <div>Profiles Page</div>;
 const SearchPage = () => <div>Search Page</div>;
 const AccountPage = () => <div>Account Page</div>;
 
@@ -33,7 +33,7 @@ function App() {
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profiles" element={<Profiles />} />
+            <Route path="/profiles" element={<ProfilesPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/account" element={<AccountPage />} />
           </Route>
