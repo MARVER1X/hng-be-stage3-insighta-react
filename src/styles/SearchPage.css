@@ -16,8 +16,10 @@
   font-size: 2.5rem;
   margin-bottom: 8px;
   background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
 }
 
 .search-hero p {
@@ -193,17 +195,18 @@
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
 .result-card {
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);
-  padding: 20px;
+  padding: 16px;
   border-radius: var(--radius-lg);
   transition: all 0.2s ease;
 }
+
 
 .result-card:hover {
   border-color: var(--accent-primary);
