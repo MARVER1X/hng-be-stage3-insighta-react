@@ -19,6 +19,10 @@ const ProfilesPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
+  // Sorting and Ordering State
+  const [sortBy, setSortBy] = useState('created_at');
+  const [order, setOrder] = useState('desc');
+  
   /**
    * Admin-only Intelligence Orchestration
    * manages the state for profile generation and UI visibility.
@@ -31,10 +35,10 @@ const ProfilesPage = () => {
    * Fetches profile data based on current page and active search filters.
    * Switches between the standard list and NLP search endpoints as needed.
    */
-  const fetchProfiles = async (currentPage = 1, query = '') => {
+  const fetchProfiles = async (currentPage = 1, query = '', currentSort = sortBy, currentOrder = order) => {
     setLoading(true);
     try {
-      let endpoint = `/api/profiles?page=${currentPage}&limit=10`;
+      let endpoint = `/api/profiles?page=${currentPage}&limit=10&sort_by=${currentSort}&order=${currentOrder}`;
       
       // If a natural language query is present, switch to the intelligence search route
       if (query) {
@@ -55,10 +59,10 @@ const ProfilesPage = () => {
     }
   };
 
-  // Re-fetch data whenever the page number changes
+  // Re-fetch data whenever page, sorting, or ordering changes
   useEffect(() => {
-    fetchProfiles(page, searchQuery);
-  }, [page]);
+    fetchProfiles(page, searchQuery, sortBy, order);
+  }, [page, sortBy, order]);
 
   /**
    * Handles the search form submission.
@@ -67,7 +71,7 @@ const ProfilesPage = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setPage(1); 
-    fetchProfiles(1, searchQuery);
+    fetchProfiles(1, searchQuery, sortBy, order);
   };
 
   /**
@@ -86,7 +90,7 @@ const ProfilesPage = () => {
       setIsModalOpen(false);
       
       // Refresh the list to reflect the new intelligence data
-      fetchProfiles(1, searchQuery);
+      fetchProfiles(1, searchQuery, sortBy, order);
     } catch (error) {
       console.error('Failed to generate profile', error);
       alert(error.response?.data?.message || 'Failed to generate profile intelligence.');
@@ -105,6 +109,27 @@ const ProfilesPage = () => {
         </div>
         
         <div className="header-actions">
+          {/* Sorting and Ordering Controls */}
+          <div className="filter-group">
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="filter-select"
+            >
+              <option value="created_at">Sort by Date</option>
+              <option value="age">Sort by Age</option>
+              <option value="gender_probability">Sort by Confidence</option>
+            </select>
+            <select 
+              value={order} 
+              onChange={(e) => setOrder(e.target.value)}
+              className="filter-select"
+            >
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+
           {/* Natural Language Query Interface */}
           <form className="search-bar" onSubmit={handleSearchSubmit}>
             <Search className="search-icon" size={18} />
@@ -150,7 +175,7 @@ const ProfilesPage = () => {
                 {profiles.map((profile) => (
                   <tr 
                     key={profile.id} 
-                    onClick={() => navigate(`/profiles/${profile.id}`)}
+                    onClick={() => navigate(`/profiles/${profile.id}`, { state: { from: 'profiles' } })}
                     className="clickable-row"
                   >
                     <td>
@@ -161,6 +186,7 @@ const ProfilesPage = () => {
                         <span className="user-name">{profile.name}</span>
                       </div>
                     </td>
+
                     <td>
                       <div className="gender-info">
                         <span className="badge-gender">{profile.gender}</span>

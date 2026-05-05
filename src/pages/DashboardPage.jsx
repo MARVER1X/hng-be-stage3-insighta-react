@@ -126,7 +126,7 @@ const DashboardPage = () => {
                 <div 
                   key={profile.id} 
                   className="recent-item clickable"
-                  onClick={() => navigate(`/profiles/${profile.id}`)}
+                  onClick={() => navigate(`/profiles/${profile.id}`, { state: { from: 'dashboard' } })}
                 >
                   <div className="item-avatar">
                     {profile.name?.charAt(0)}

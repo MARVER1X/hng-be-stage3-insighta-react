@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Trash2, 
@@ -23,7 +23,14 @@ import '../styles/ProfileDetailPage.css';
 const ProfileDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+  
+  // Determine the originating context for the back navigation
+  const fromDashboard = location.state?.from === 'dashboard';
+  const backPath = fromDashboard ? '/dashboard' : '/profiles';
+  const backLabel = fromDashboard ? 'Back to Dashboard' : 'Back to Profiles';
+
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,8 +70,8 @@ const ProfileDetailPage = () => {
     setDeleting(true);
     try {
       await client.delete(`/api/profiles/${id}`);
-      // Return to directory upon successful purge
-      navigate('/profiles');
+      // Return to the previous list upon successful purge
+      navigate(backPath);
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to delete profile.');
       setDeleting(false);
@@ -86,9 +93,9 @@ const ProfileDetailPage = () => {
         <ShieldAlert size={48} className="error-icon" />
         <h2>Intelligence Breach</h2>
         <p>{error || 'The requested profile could not be located in our secure database.'}</p>
-        <Link to="/profiles" className="back-link">
+        <Link to={backPath} className="back-link">
           <ArrowLeft size={18} />
-          <span>Back to Profiles</span>
+          <span>{backLabel}</span>
         </Link>
       </div>
     );
@@ -96,14 +103,15 @@ const ProfileDetailPage = () => {
 
   return (
     <div className="profile-detail-container">
-      {/* Navigation Header */}
+      {/* Dynamic Navigation Header */}
       <div className="detail-header">
-        <Link to="/profiles" className="back-btn">
+        <Link to={backPath} className="back-btn">
           <ArrowLeft size={20} />
-          <span>Back to Directory</span>
+          <span>{backLabel}</span>
         </Link>
 
         {/* Admin Action: Permanent Intelligence Purge */}
+
         {user?.role === 'admin' && (
           <button 
             className="delete-btn" 

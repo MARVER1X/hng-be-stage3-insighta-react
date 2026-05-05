@@ -19,8 +19,31 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
+
+.filter-group {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.filter-select:focus {
+  border-color: var(--accent-primary);
+}
+
 
 
 .page-header p {
