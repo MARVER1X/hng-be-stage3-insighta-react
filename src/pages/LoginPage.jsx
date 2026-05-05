@@ -1,4 +1,6 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/LoginPage.css';
 
 /**
@@ -24,6 +26,22 @@ const GitHubIcon = ({ size = 20 }) => (
  * backend's GitHub OAuth flow.
  */
 const LoginPage = () => {
+  const { user, loading } = useAuth();
+
+  // If session check is still in progress, show a brief loader
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  // If user is already authenticated, redirect to dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   /**
    * Initiates the secure OAuth login sequence.
    * This redirects the user to the backend which then handles the GitHub handshake.
@@ -32,6 +50,7 @@ const LoginPage = () => {
     // Redirect to backend OAuth flow (Server-side handling of PKCE and state)
     window.location.href = 'https://web-production-1d564.up.railway.app/auth/github';
   };
+
 
   return (
     <div className="login-container">
