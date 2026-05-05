@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import ProfilesPage from './pages/ProfilesPage';
 import DashboardPage from './pages/DashboardPage';
 import SearchPage from './pages/SearchPage';
-import AccountPage from './pages/AccountPage';
+import ProfileDetailPage from './pages/ProfileDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 /**
@@ -36,6 +36,7 @@ function App() {
           >
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profiles" element={<ProfilesPage />} />
+            <Route path="/profiles/:id" element={<ProfileDetailPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/account" element={<AccountPage />} />
           </Route>

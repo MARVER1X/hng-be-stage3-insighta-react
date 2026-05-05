@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
 import client from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import '../styles/ProfilesPage.css';
 
 /**
@@ -9,11 +11,21 @@ import '../styles/ProfilesPage.css';
  * Supports natural language filtering and server-side pagination.
  */
 const ProfilesPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  /**
+   * Admin-only Intelligence Orchestration
+   * manages the state for profile generation and UI visibility.
+   */
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [creating, setCreating] = useState(false);
 
   /**
    * Fetches profile data based on current page and active search filters.
@@ -38,6 +50,7 @@ const ProfilesPage = () => {
     } catch (error) {
       console.error('Failed to fetch profiles', error);
     } finally {
+      // Identity check complete: allows profile gallery to render
       setLoading(false);
     }
   };
@@ -57,6 +70,31 @@ const ProfilesPage = () => {
     fetchProfiles(1, searchQuery);
   };
 
+  /**
+   * Triggers the backend profile generation sequence.
+   * Leverages the multi-API enrichment protocol (Genderize/Agify/Nationalize).
+   * Restricted to Admin roles only.
+   */
+  const handleCreateProfile = async (e) => {
+    e.preventDefault();
+    if (!newName.trim()) return;
+
+    setCreating(true);
+    try {
+      await client.post('/api/profiles', { name: newName.trim() });
+      setNewName('');
+      setIsModalOpen(false);
+      
+      // Refresh the list to reflect the new intelligence data
+      fetchProfiles(1, searchQuery);
+    } catch (error) {
+      console.error('Failed to generate profile', error);
+      alert(error.response?.data?.message || 'Failed to generate profile intelligence.');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <div className="profiles-container">
       {/* Page Header and Intelligence Filter */}
@@ -66,16 +104,27 @@ const ProfilesPage = () => {
           <p>Global identity data and profile demographics.</p>
         </div>
         
-        <form className="search-bar" onSubmit={handleSearchSubmit}>
-          <Search className="search-icon" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search naturally (e.g. 'Men in Nigeria')..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" className="search-btn">Search</button>
-        </form>
+        <div className="header-actions">
+          {/* Natural Language Query Interface */}
+          <form className="search-bar" onSubmit={handleSearchSubmit}>
+            <Search className="search-icon" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search naturally (e.g. 'Men in Nigeria')..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="search-btn">Search</button>
+          </form>
+
+          {/* Admin Action: Manual Profile Generation Trigger */}
+          {user?.role === 'admin' && (
+            <button className="add-profile-btn" onClick={() => setIsModalOpen(true)}>
+              <Plus size={20} />
+              <span>Add Profile</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Main Intelligence Table */}
@@ -99,7 +148,11 @@ const ProfilesPage = () => {
               </thead>
               <tbody>
                 {profiles.map((profile) => (
-                  <tr key={profile.id}>
+                  <tr 
+                    key={profile.id} 
+                    onClick={() => navigate(`/profiles/${profile.id}`)}
+                    className="clickable-row"
+                  >
                     <td>
                       <div className="user-info">
                         <div className="user-avatar">
@@ -134,9 +187,10 @@ const ProfilesPage = () => {
 
             {/* Pagination Controls */}
             <div className="pagination">
+              {/* stopPropagation prevents row-click navigation when using paging controls */}
               <button 
                 disabled={page <= 1} 
-                onClick={() => setPage(p => p - 1)}
+                onClick={(e) => { e.stopPropagation(); setPage(p => p - 1); }}
                 className="pag-btn"
               >
                 <ChevronLeft size={18} />
@@ -144,7 +198,7 @@ const ProfilesPage = () => {
               <span className="pag-info">Page {page} of {totalPages}</span>
               <button 
                 disabled={page >= totalPages} 
-                onClick={() => setPage(p => p + 1)}
+                onClick={(e) => { e.stopPropagation(); setPage(p => p + 1); }}
                 className="pag-btn"
               >
                 <ChevronRight size={18} />
@@ -153,6 +207,52 @@ const ProfilesPage = () => {
           </>
         )}
       </div>
+
+      {/* Admin-only Profile Creation Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Initialize New Profile</h3>
+              <button className="close-btn" onClick={() => setIsModalOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <p className="modal-desc">
+              Enter a name to trigger the intelligence enrichment process across connected APIs.
+            </p>
+            <form onSubmit={handleCreateProfile}>
+              <div className="input-group">
+                <label>Subject Name</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. John Doe"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  autoFocus
+                  required
+                />
+              </div>
+              <div className="modal-actions">
+                <button 
+                  type="button" 
+                  className="cancel-btn" 
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="confirm-btn"
+                  disabled={creating}
+                >
+                  {creating ? 'Enriching...' : 'Generate Profile'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
