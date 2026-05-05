@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  Link,
+  useNavigate 
+} from 'react-router-dom';
+import { 
   Users, 
   Globe, 
   Activity, 
@@ -17,6 +21,7 @@ import '../styles/DashboardPage.css';
  */
 const DashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     total: 0,
     countries: 0,
@@ -110,7 +115,7 @@ const DashboardPage = () => {
         <section className="recent-section">
           <div className="section-header">
             <h2>Recent Detections</h2>
-            <button className="view-all-btn">View All</button>
+            <Link to="/profiles" className="view-all-btn">View All</Link>
           </div>
 
           <div className="recent-list">
@@ -118,7 +123,11 @@ const DashboardPage = () => {
               <div className="recent-loading">Loading...</div>
             ) : (
               recentProfiles.map(profile => (
-                <div key={profile.id} className="recent-item">
+                <div 
+                  key={profile.id} 
+                  className="recent-item clickable"
+                  onClick={() => navigate(`/profiles/${profile.id}`)}
+                >
                   <div className="item-avatar">
                     {profile.name?.charAt(0)}
                   </div>
