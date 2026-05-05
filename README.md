@@ -47,7 +47,7 @@ A premium, glassmorphism-themed command center for non-technical analysts and sy
 
 ## 🗂️ Architecture & Project Structure
 
-```
+```text
 ├── src
 │   ├── api              # Axios client with interceptors for 401 handling
 │   ├── components       # Modular UI blocks (Sidebar, ProtectedRoute, Layout)
@@ -74,4 +74,3 @@ A premium, glassmorphism-themed command center for non-technical analysts and sy
 
 **Marvellous**  
 GitHub: [@MARVER1X](https://github.com/MARVER1X)
-
