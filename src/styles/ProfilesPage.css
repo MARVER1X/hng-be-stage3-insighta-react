@@ -403,8 +403,17 @@
 
   .profiles-table td:last-child {
     padding-bottom: 20px;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none; /* Removed border to use margin gap instead */
   }
+
+  .clickable-row {
+    margin-bottom: 16px;
+    display: block;
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+  }
+
 
   .profiles-table td::before {
     content: attr(data-label);

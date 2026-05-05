@@ -232,13 +232,28 @@
     font-size: 1.25rem;
   }
 
+  .stats-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
   .stat-card {
     padding: 12px;
     gap: 12px;
+    min-width: 0; /* Prevent overflow */
   }
 
   .stat-value {
     font-size: 1.2rem;
+  }
+
+  .dashboard-content {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
+  .recent-section, .info-section {
+    width: 100%;
   }
 
   .recent-item {
@@ -256,5 +271,6 @@
     font-size: 0.85rem;
   }
 }
+
 
 
