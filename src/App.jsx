@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import ProfilesPage from './pages/ProfilesPage';
 import DashboardPage from './pages/DashboardPage';
 import SearchPage from './pages/SearchPage';
+import AccountPage from './pages/AccountPage';
 import ProfileDetailPage from './pages/ProfileDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
