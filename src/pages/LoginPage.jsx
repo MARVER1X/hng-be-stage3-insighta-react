@@ -30,7 +30,7 @@ const LoginPage = () => {
    */
   const handleLogin = () => {
     // Redirect to backend OAuth flow (Server-side handling of PKCE and state)
-    window.location.href = 'http://localhost:8000/auth/github';
+    window.location.href = 'https://web-production-1d564.up.railway.app/auth/github';
   };
 
   return (
