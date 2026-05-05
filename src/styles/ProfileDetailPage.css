@@ -261,3 +261,21 @@
   }
 }
 
+@media (max-width: 320px) {
+  .detail-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .detail-name {
+    font-size: 1.2rem;
+  }
+
+  .metrics-section {
+    padding: 16px;
+  }
+}
+
+
