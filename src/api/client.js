@@ -5,7 +5,7 @@ import axios from 'axios';
  * This Axios instance is pre-configured with the base URL, versioning headers,
  * and credential handling required for secure HttpOnly cookie communication.
  */
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://web-production-1d564.up.railway.app';
 
 const client = axios.create({
   baseURL: API_BASE_URL,
