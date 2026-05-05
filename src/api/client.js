@@ -1,24 +1,33 @@
 import axios from 'axios';
 
+/**
+ * Insighta API Client Configuration
+ * This Axios instance is pre-configured with the base URL, versioning headers,
+ * and credential handling required for secure HttpOnly cookie communication.
+ */
 const API_BASE_URL = 'http://localhost:8000';
 
 const client = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // Crucial for HTTP-only cookies
+  withCredentials: true, // Enables the browser to send and receive cookies (Auth Tokens)
   headers: {
     'X-API-Version': '1',
     'Content-Type': 'application/json',
   },
 });
 
-// Error Interceptor for Global Error Handling
+/**
+ * Global Response Interceptor
+ * Standardizes error handling by extracting the custom 'message' field from 
+ * the backend's error format and surfacing it via standard Error objects.
+ */
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If the error has a JSON body, we extract the message
+    // Backend returns { status: 'error', message: '...' }
     const message = error.response?.data?.message || 'An unexpected error occurred';
     
-    // We log the error but also return a rejected promise so components can catch it
+    // Log for developer visibility while propagating the error to the caller
     console.error('[API Error]:', message);
     return Promise.reject(new Error(message));
   }

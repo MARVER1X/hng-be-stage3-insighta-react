@@ -7,16 +7,26 @@ import ProfilesPage from './pages/ProfilesPage';
 import DashboardPage from './pages/DashboardPage';
 import SearchPage from './pages/SearchPage';
 import AccountPage from './pages/AccountPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
+/**
+ * Main Application Root Component
+ * Orchestrates global providers, routing logic, and layout gating.
+ */
 function App() {
   return (
+    /* Global Authentication State Provider */
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
+          {/* Public Routes: Accessible without an active session */}
           <Route path="/login" element={<LoginPage />} />
           
-          {/* Protected Area with MainLayout */}
+          {/* 
+              Protected Internal Area
+              Uses the 'MainLayout' structural shell and the 'ProtectedRoute' guard
+              to ensure only verified users can access the dashboard and analytics.
+          */}
           <Route 
             element={
               <ProtectedRoute>
@@ -30,7 +40,7 @@ function App() {
             <Route path="/account" element={<AccountPage />} />
           </Route>
           
-          {/* Default Redirects */}
+          {/* Intelligent Fallback Redirects */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

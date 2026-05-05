@@ -10,6 +10,11 @@ import client from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import '../styles/DashboardPage.css';
 
+/**
+ * Executive Dashboard Page
+ * Provides a high-level overview of intelligence metrics, recent profile detections,
+ * and system activity status using data-driven summary cards.
+ */
 const DashboardPage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState({
@@ -20,18 +25,24 @@ const DashboardPage = () => {
   const [recentProfiles, setRecentProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Aggregates dashboard data from multiple API endpoints.
+   * Uses parallel requests to optimize initial load time.
+   */
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Parallel fetch for efficiency
       const [profilesRes, recentRes] = await Promise.all([
-        client.get('/api/profiles?limit=1'), // Just to get the total count from pagination
+        // Fetch base count for metrics
+        client.get('/api/profiles?limit=1'), 
+        // Fetch 5 most recent records for the activity feed
         client.get('/api/profiles?limit=5&sort_by=created_at&order=desc')
       ]);
 
       setStats({
-        total: profilesRes.data.pagination?.total_items || 0,
-        countries: 12, // In a real app, we'd have a specific stats endpoint
+        // Map keys according to the simplified pagination format
+        total: profilesRes.data.total || 0,
+        countries: 12, // Placeholder for geographic distribution stats
         recentCount: recentRes.data.data.length
       });
       setRecentProfiles(recentRes.data.data);
@@ -48,12 +59,15 @@ const DashboardPage = () => {
 
   return (
     <div className="dashboard-container">
+      {/* Personalized Welcome Header */}
       <header className="dashboard-header">
         <h1>Welcome back, {user?.username}</h1>
         <p>Here is an overview of the Insighta intelligence network.</p>
       </header>
 
+      {/* Primary Metrics Grid */}
       <div className="stats-grid">
+        {/* Total Intelligence Reach */}
         <div className="stat-card">
           <div className="stat-icon blue">
             <Users size={24} />
@@ -68,6 +82,7 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Global Distribution */}
         <div className="stat-card">
           <div className="stat-icon green">
             <Globe size={24} />
@@ -78,6 +93,7 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Intelligence Velocity */}
         <div className="stat-card">
           <div className="stat-icon purple">
             <Activity size={24} />
@@ -90,6 +106,7 @@ const DashboardPage = () => {
       </div>
 
       <div className="dashboard-content">
+        {/* Real-time Activity Feed */}
         <section className="recent-section">
           <div className="section-header">
             <h2>Recent Detections</h2>
@@ -118,6 +135,7 @@ const DashboardPage = () => {
           </div>
         </section>
 
+        {/* Informational / CTA Section */}
         <section className="info-section">
           <div className="info-card gold">
             <UserPlus size={32} />

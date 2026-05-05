@@ -11,9 +11,15 @@ import {
 import { useAuth } from '../context/AuthContext';
 import '../styles/Sidebar.css';
 
+/**
+ * Sidebar Navigation Component
+ * Provides the main navigation links for the application with active state styling.
+ * Displays role-based badges (e.g., Admin) and manages the logout trigger.
+ */
 const Sidebar = () => {
   const { user, logout } = useAuth();
 
+  // Definition of primary navigation paths and icons
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/profiles', label: 'Profiles', icon: <Users size={20} /> },
@@ -23,11 +29,14 @@ const Sidebar = () => {
 
   return (
     <aside className="sidebar">
+      {/* Sidebar Branding and Identity */}
       <div className="sidebar-header">
         <div className="logo-container">
           <div className="logo-icon">I</div>
           <h2>Insighta</h2>
         </div>
+        
+        {/* Role-based UI Enhancement: Only visible to system admins */}
         {user?.role === 'admin' && (
           <div className="admin-badge">
             <ShieldCheck size={12} />
@@ -36,6 +45,7 @@ const Sidebar = () => {
         )}
       </div>
 
+      {/* Primary Navigation Menu */}
       <nav className="sidebar-nav">
         {navItems.map((item) => (
           <NavLink 
@@ -49,6 +59,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
+      {/* Sidebar Utilities: Logout */}
       <div className="sidebar-footer">
         <button className="logout-btn" onClick={logout}>
           <LogOut size={20} />

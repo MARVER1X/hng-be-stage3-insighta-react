@@ -3,6 +3,11 @@ import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import client from '../api/client';
 import '../styles/ProfilesPage.css';
 
+/**
+ * Profiles Intelligence Gallery
+ * A data-intensive view displaying all intelligence profiles in a tabular format.
+ * Supports natural language filtering and server-side pagination.
+ */
 const ProfilesPage = () => {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,21 +15,25 @@ const ProfilesPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  /**
+   * Fetches profile data based on current page and active search filters.
+   * Switches between the standard list and NLP search endpoints as needed.
+   */
   const fetchProfiles = async (currentPage = 1, query = '') => {
     setLoading(true);
     try {
       let endpoint = `/api/profiles?page=${currentPage}&limit=10`;
       
-      // If there is a query, we use the search endpoint instead
+      // If a natural language query is present, switch to the intelligence search route
       if (query) {
-        endpoint = `/api/profiles/search?query=${encodeURIComponent(query)}&page=${currentPage}&limit=10`;
+        endpoint = `/api/profiles/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=10`;
       }
 
       const response = await client.get(endpoint);
       setProfiles(response.data.data);
       
-      // Calculate total pages from backend metadata
-      const total = response.data.pagination?.total_pages || 1;
+      // Synchronize pagination state with backend metadata
+      const total = response.data?.total_pages || 1;
       setTotalPages(total);
     } catch (error) {
       console.error('Failed to fetch profiles', error);
@@ -33,18 +42,24 @@ const ProfilesPage = () => {
     }
   };
 
+  // Re-fetch data whenever the page number changes
   useEffect(() => {
     fetchProfiles(page, searchQuery);
   }, [page]);
 
+  /**
+   * Handles the search form submission.
+   * Resets the page to 1 to ensure the user sees the top of the filtered results.
+   */
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setPage(1); // Reset to first page on new search
+    setPage(1); 
     fetchProfiles(1, searchQuery);
   };
 
   return (
     <div className="profiles-container">
+      {/* Page Header and Intelligence Filter */}
       <div className="page-header">
         <div>
           <h1>Profile Intelligence</h1>
@@ -63,6 +78,7 @@ const ProfilesPage = () => {
         </form>
       </div>
 
+      {/* Main Intelligence Table */}
       <div className="table-card">
         {loading ? (
           <div className="table-loader">
@@ -116,6 +132,7 @@ const ProfilesPage = () => {
               </tbody>
             </table>
 
+            {/* Pagination Controls */}
             <div className="pagination">
               <button 
                 disabled={page <= 1} 

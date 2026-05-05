@@ -3,12 +3,22 @@ import { Search, Info, UserCheck, MapPin, Zap } from 'lucide-react';
 import client from '../api/client';
 import '../styles/SearchPage.css';
 
+/**
+ * Intelligence Command Center
+ * A dedicated interface for Natural Language processing and exploratory search.
+ * Designed for rapid analysis of global profile demographics.
+ */
 const SearchPage = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
   const [hasSearched, setHasSearched] = useState(false);
 
+  /**
+   * Executes the NLP-powered search request.
+   * Maps the human-readable string to structured database filters on the backend.
+   */
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -16,8 +26,10 @@ const SearchPage = () => {
     setLoading(true);
     setHasSearched(true);
     try {
-      const response = await client.get(`/api/profiles/search?query=${encodeURIComponent(query)}&limit=20`);
+      // Backend interprets 'q' parameter using a specialized NLP token parser
+      const response = await client.get(`/api/profiles/search?q=${encodeURIComponent(query)}&limit=20`);
       setResults(response.data.data);
+      setTotal(response.data.total);
     } catch (error) {
       console.error('Intelligence search failed', error);
     } finally {
@@ -25,6 +37,7 @@ const SearchPage = () => {
     }
   };
 
+  // Example patterns to guide users on how to interact with the NLP engine
   const examples = [
     { text: "Adult men in Nigeria", icon: <MapPin size={16} /> },
     { text: "Teenagers in United Kingdom", icon: <Zap size={16} /> },
@@ -33,6 +46,7 @@ const SearchPage = () => {
 
   return (
     <div className="search-page-container">
+      {/* Hero Search Section */}
       <div className="search-hero">
         <h1>Intelligence Command</h1>
         <p>Use Natural Language to query the global profile database.</p>
@@ -52,6 +66,7 @@ const SearchPage = () => {
         </form>
       </div>
 
+      {/* Conditional View: Suggestions vs. Results */}
       {!hasSearched ? (
         <div className="search-suggestions">
           <div className="suggestion-header">
@@ -63,10 +78,7 @@ const SearchPage = () => {
               <div 
                 key={i} 
                 className="suggestion-card" 
-                onClick={() => {
-                  setQuery(ex.text);
-                  // We don't trigger search automatically to allow user to edit
-                }}
+                onClick={() => setQuery(ex.text)}
               >
                 {ex.icon}
                 <span>{ex.text}</span>
@@ -76,6 +88,7 @@ const SearchPage = () => {
         </div>
       ) : (
         <div className="search-results-section">
+          {/* Search Metadata Overview */}
           <div className="results-meta">
             Found {results.length} intelligence matches for "{query}"
           </div>
@@ -85,6 +98,7 @@ const SearchPage = () => {
               <div className="spinner"></div>
             </div>
           ) : results.length > 0 ? (
+            /* Results Grid: Interactive Profile Cards */
             <div className="results-grid">
               {results.map(profile => (
                 <div key={profile.id} className="result-card">
@@ -104,6 +118,7 @@ const SearchPage = () => {
               ))}
             </div>
           ) : (
+            /* Empty State for failed queries */
             <div className="no-results">
               <h3>No intelligence matches found.</h3>
               <p>Try refining your query with different age groups or countries.</p>
