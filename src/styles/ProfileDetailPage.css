@@ -231,12 +231,33 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 900px) {
-  .detail-grid {
+@media (max-width: 768px) {
+  .profile-detail-container {
+    gap: 20px;
+  }
+
+  .detail-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .detail-name {
+    font-size: 1.4rem;
+  }
+
+  .metrics-section {
+    padding: 24px;
+  }
+
+  .metrics-grid {
     grid-template-columns: 1fr;
   }
-  
-  .identity-section {
-    padding: 32px;
+
+  .metadata-footer {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
   }
 }
+

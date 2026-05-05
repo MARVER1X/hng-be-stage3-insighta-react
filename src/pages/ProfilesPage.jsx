@@ -116,17 +116,17 @@ const ProfilesPage = () => {
               onChange={(e) => setSortBy(e.target.value)}
               className="filter-select"
             >
-              <option value="created_at">Sort by Date</option>
-              <option value="age">Sort by Age</option>
-              <option value="gender_probability">Sort by Confidence</option>
+              <option value="created_at">Date</option>
+              <option value="age">Age</option>
+              <option value="gender_probability">Confidence</option>
             </select>
             <select 
               value={order} 
               onChange={(e) => setOrder(e.target.value)}
               className="filter-select"
             >
-              <option value="desc">Descending</option>
-              <option value="asc">Ascending</option>
+              <option value="desc">Desc</option>
+              <option value="asc">Asc</option>
             </select>
           </div>
 
@@ -135,22 +135,23 @@ const ProfilesPage = () => {
             <Search className="search-icon" size={18} />
             <input 
               type="text" 
-              placeholder="Search naturally (e.g. 'Men in Nigeria')..." 
+              placeholder="Search..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="search-btn">Search</button>
+            <button type="submit" className="search-btn">Go</button>
           </form>
 
           {/* Admin Action: Manual Profile Generation Trigger */}
           {user?.role === 'admin' && (
             <button className="add-profile-btn" onClick={() => setIsModalOpen(true)}>
               <Plus size={20} />
-              <span>Add Profile</span>
+              <span className="btn-text">Add</span>
             </button>
           )}
         </div>
       </div>
+
 
       {/* Main Intelligence Table */}
       <div className="table-card">

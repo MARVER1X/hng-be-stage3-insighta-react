@@ -104,3 +104,47 @@
   background: rgba(239, 68, 68, 0.1);
   color: var(--error);
 }
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    padding: 8px 16px;
+    flex-direction: row;
+    justify-content: space-around;
+    top: auto;
+    bottom: 0;
+    border-right: none;
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar-header, .sidebar-footer {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .nav-link {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    font-size: 0.7rem;
+    flex: 1;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .nav-link span {
+    font-weight: 500;
+  }
+
+  .nav-link svg {
+    width: 20px;
+    height: 20px;
+  }
+}
