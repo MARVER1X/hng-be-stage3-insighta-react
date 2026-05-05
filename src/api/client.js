@@ -18,14 +18,27 @@ const client = axios.create({
 
 /**
  * Global Response Interceptor
- * Standardizes error handling by extracting the custom 'message' field from 
- * the backend's error format and surfacing it via standard Error objects.
+ * Standardizes error handling and manages session expiration.
  */
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Backend returns { status: 'error', message: '...' }
-    const message = error.response?.data?.message || 'An unexpected error occurred';
+    // 401 Unauthorized: Session is invalid or has expired
+    if (error.response?.status === 401) {
+      console.warn('[Session Expired]: Redirecting to login...');
+      
+      // Perform a local logout by redirecting to the login page.
+      // This is a robust fallback if the app state gets out of sync with the cookies.
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
+
+    // Extract error message: Supports custom 'message' field or FastAPI's default 'detail'
+    const message = 
+      error.response?.data?.message || 
+      error.response?.data?.detail || 
+      'An unexpected error occurred';
     
     // Log for developer visibility while propagating the error to the caller
     console.error('[API Error]:', message);
