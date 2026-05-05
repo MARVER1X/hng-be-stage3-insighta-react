@@ -17,18 +17,43 @@ const client = axios.create({
 });
 
 /**
- * Global Response Interceptor
- * Standardizes error handling and manages session expiration.
+ * Global Audit Logging Interceptors
+ * Provides a structured trail of all network activity for debugging and security audits.
  */
+
+// Request Interceptor: Logs outgoing handshake details
+client.interceptors.request.use((config) => {
+  config.metadata = { startTime: new Date() };
+  console.log(
+    `%c[API Request] %c${config.method.toUpperCase()} %c${config.url}`,
+    'color: #6366f1; font-weight: bold',
+    'color: #94a3b8',
+    'color: #f8fafc'
+  );
+  if (config.data) console.log('[Payload]:', config.data);
+  return config;
+});
+
+// Response Interceptor: Logs completion status and execution duration
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const duration = new Date() - response.config.metadata.startTime;
+    console.log(
+      `%c[API Success] %c${response.status} %c(${duration}ms)`,
+      'color: #10b981; font-weight: bold',
+      'color: #94a3b8',
+      'color: #64748b'
+    );
+    return response;
+  },
   (error) => {
+    const duration = error.config?.metadata 
+      ? new Date() - error.config.metadata.startTime 
+      : 'unknown';
+      
     // 401 Unauthorized: Session is invalid or has expired
     if (error.response?.status === 401) {
-      console.warn('[Session Expired]: Redirecting to login...');
-      
-      // Perform a local logout by redirecting to the login page.
-      // This is a robust fallback if the app state gets out of sync with the cookies.
+      console.warn(`%c[Session Expired] %c${duration}ms`, 'color: #f59e0b; font-weight: bold', 'color: #64748b');
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
@@ -40,10 +65,17 @@ client.interceptors.response.use(
       error.response?.data?.detail || 
       'An unexpected error occurred';
     
-    // Log for developer visibility while propagating the error to the caller
-    console.error('[API Error]:', message);
+    console.error(
+      `%c[API Error] %c${error.response?.status || 'Network'} %c(${duration}ms): %c${message}`,
+      'color: #ef4444; font-weight: bold',
+      'color: #94a3b8',
+      'color: #64748b',
+      'color: #f8fafc'
+    );
+    
     return Promise.reject(new Error(message));
   }
 );
+
 
 export default client;
