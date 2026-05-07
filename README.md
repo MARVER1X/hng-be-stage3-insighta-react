@@ -6,7 +6,7 @@ A premium, glassmorphism-themed command center for non-technical analysts and sy
 
 ## 🔗 Live Demo
 
-[View Live on Vercel](https://insighta.vercel.app)
+[View Live on Vercel](https://hng-be-stage3-insighta-react.vercel.app)
 
 ---
 
